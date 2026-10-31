@@ -152,6 +152,17 @@ function buildFields(variables) {
     fieldsEl.append(el("label", {}, variable.label, input));
   }
 }
+function absorbHash() {
+  // A link like page/#shop_id=123&ip_name=... fills "my data" once; the hash never leaves the browser.
+  const params = new URLSearchParams(location.hash.slice(1));
+  let changed = false;
+  for (const [key, value] of params) {
+    if (key in labels && value.trim()) { values = { ...values, [key]: value.trim() }; changed = true; }
+  }
+  if (!changed) return;
+  saveValues();
+  history.replaceState(null, "", location.pathname + location.search);
+}
 async function init() {
   values = loadValues();
   let data;
@@ -164,6 +175,7 @@ async function init() {
     return;
   }
   labels = Object.fromEntries((data.variables || []).map((v) => [v.key, v.label]));
+  absorbHash();
   buildFields(data.variables || []);
   const frag = document.createDocumentFragment();
   cardsEl.style.cssText = "display:flex;flex-direction:column;gap:20px";
