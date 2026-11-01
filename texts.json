@@ -57,6 +57,12 @@
       "title": "Мак, откат: вернуть Claude на мак (если что-то не так)",
       "where": "Куда: «Терминал» на маке. Закройте приложение Claude (Cmd+Q). Возвращает прежнюю ~/.claude; данные на диске не трогает.",
       "text": "bash ~/z11-setup.sh unlink"
+    },
+    {
+      "id": "z11-diag",
+      "title": "Мак: что где лежит из настроек Claude (только чтение)",
+      "where": "Куда: «Терминал» на маке. Ничего не меняет. Пришлите мне вывод.",
+      "text": "ls -d ~/.claude* ~/ECC* ~/Library/Application\\ Support/Claude* 2>/dev/null; echo ---; du -sh ~/.claude.mac-backup-* /Volumes/z11/claude-home ~/ECC ~/Library/Application\\ Support/Claude 2>/dev/null; echo ---; ls /Volumes/z11/claude-home | head -30"
     }
   ]
 }
