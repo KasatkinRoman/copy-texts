@@ -105,6 +105,12 @@
       "title": "Задание Claude на маке: сохранить данные бота и сведения о сервере",
       "where": "Куда: сообщением в Claude на маке, после того как вы скачали три файла с сервера (code.kasatkinre.ru, папка handoff) в «Загрузки».",
       "text": "Задание: сохрани на маке сведения о сервере и копию данных бота.\n\n1. В ~/Downloads лежат три файла с сервера: garnizon-server-data.tgz, garnizon-server-data.sha256 и server-overview.md. Проверь контрольную сумму архива (shasum -a 256 -c).\n2. Архив garnizon-server-data.tgz положи в /Volumes/z11/archive/server-data/ и НЕ распаковывай: внутри пароли и рабочие данные бота. Поставь права 600.\n3. server-overview.md сохрани как заметку памяти (основная папка памяти, имя garnizon-server) и добавь строку в MEMORY.md. Прочти её и перескажи мне в пяти строках, что на сервере работает и какие там правила.\n4. Проверь без изменений, работает ли доступ на сервер по SSH с этого мака (адрес и пользователь указаны в заметке): только команда ssh -o BatchMode=yes <пользователь>@<адрес> true. Скажи результат. Если ключа нет, предложи, как настроить, но ничего не меняй без моего «ок».\n5. Ничего не запускай из архива и не включай на маке задания ru.gkgarnizon.*. Старую ~/GarnizonMail не используй.\n\nКогда закончишь, покажи, что сделано и где что лежит."
+    },
+    {
+      "id": "server-weekly-off",
+      "title": "Сервер: выключить еженедельный отчёт по рекламе (sudo)",
+      "where": "Куда: терминал НА СЕРВЕРЕ (через code-server или SSH). Спросит пароль sudo. Удаляет только таймер и службу еженедельного отчёта; после этого в списке останутся 3 таймера: buttons, autodraft, backup.",
+      "text": "sudo systemctl disable --now garnizon-weekly.timer && sudo rm /etc/systemd/system/garnizon-weekly.timer /etc/systemd/system/garnizon-weekly.service && sudo systemctl daemon-reload && systemctl list-timers 'garnizon-*' --no-pager"
     }
   ]
 }
