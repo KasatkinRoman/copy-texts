@@ -111,12 +111,6 @@
       "title": "Сервер: выключить еженедельный отчёт по рекламе (sudo)",
       "where": "Куда: терминал НА СЕРВЕРЕ (через code-server или SSH). Спросит пароль sudo. Удаляет только таймер и службу еженедельного отчёта; после этого в списке останутся 3 таймера: buttons, autodraft, backup.",
       "text": "sudo systemctl disable --now garnizon-weekly.timer && sudo rm /etc/systemd/system/garnizon-weekly.timer /etc/systemd/system/garnizon-weekly.service && sudo systemctl daemon-reload && systemctl list-timers 'garnizon-*' --no-pager"
-    },
-    {
-      "id": "server-units-to-repo",
-      "title": "Сервер: скопировать файлы таймеров бота в репозиторий (sudo)",
-      "where": "Куда: терминал НА СЕРВЕРЕ. Копирует четыре файла юнитов buttons и autodraft (они читаются только root) в папку tools/sales/server/systemd репозитория. Секретов в них нет. После этого напишите мне, и я закоммичу.",
-      "text": "cd ~/projects/gkgarnizon-site && sudo cp /etc/systemd/system/garnizon-buttons.service /etc/systemd/system/garnizon-buttons.timer /etc/systemd/system/garnizon-autodraft.service /etc/systemd/system/garnizon-autodraft.timer tools/sales/server/systemd/ && sudo chown Kasatkin: tools/sales/server/systemd/garnizon-* && chmod 644 tools/sales/server/systemd/garnizon-* && git status --short"
     }
   ]
 }
