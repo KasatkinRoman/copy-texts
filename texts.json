@@ -111,6 +111,12 @@
       "title": "Сервер: выключить еженедельный отчёт по рекламе (sudo)",
       "where": "Куда: терминал НА СЕРВЕРЕ (через code-server или SSH). Спросит пароль sudo. Удаляет только таймер и службу еженедельного отчёта; после этого в списке останутся 3 таймера: buttons, autodraft, backup.",
       "text": "sudo systemctl disable --now garnizon-weekly.timer && sudo rm /etc/systemd/system/garnizon-weekly.timer /etc/systemd/system/garnizon-weekly.service && sudo systemctl daemon-reload && systemctl list-timers 'garnizon-*' --no-pager"
+    },
+    {
+      "id": "gemini-windows-check",
+      "title": "Gemini на Windows: проверка перед коммитом",
+      "where": "Антигравити / Gemini на Windows-компьютере",
+      "text": "Спасибо. Пока ничего не коммить в ветку mail-migration и не пуши.\n\n1. Покажи результат команд: git status, git branch --show-current и git diff --stat. Если ты менял файлы проекта (model_backend.py, gemini_backend.py и др.), перенеси эти изменения в отдельную ветку windows-test и запушь её туда, не в mail-migration и не в main. Я покажу diff человеку-ревьюеру.\n2. Для работы по умолчанию оставь одну модель из GARNIZON_GEMINI_MODEL (gemini-3.6-flash). Автопереключение на gemini-3.5-flash-lite не нужно: для клиентских КП и договоров дешёвая модель недопустима. Если ты добавил такой fallback, не включай его по умолчанию.\n3. Запусти полный набор тестов: python -m unittest discover -s tools\\sales -p \"test_*.py\" и покажи итоговую строку (ожидается 234 теста, OK) и npx vitest run tools/sales (ожидается 49 passed).\n4. Выполни python tools\\sales\\scheduled_job.py doctor и покажи вывод (секреты не показывать).\n5. Проверь, что в C:\\Users\\Office\\GarnizonMail нет файла backend-override (или он содержит gemini), а .env не лежит в репозитории и не попадает в git status.\n6. Расписание в Планировщике Windows пока НЕ включай. Его включаем только после того, как серверные таймеры будут выключены.\n\nНичего не отправляй клиентам и не запускай боевую отправку почты. Пароли и ключи в ответ не вставляй."
     }
   ]
 }
