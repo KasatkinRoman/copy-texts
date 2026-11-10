@@ -15,6 +15,10 @@
     {
       "key": "server_host",
       "label": "Адрес сервера для SSH"
+    },
+    {
+      "key": "win_project",
+      "label": "Папка проекта gkgarnizon-site на Windows"
     }
   ],
   "texts": [
@@ -143,6 +147,30 @@
       "title": "Gemini: подмена папки данных на свежую копию с сервера",
       "where": "Антигравити / Gemini на Windows-компьютере, после копирования с сервера",
       "text": "Свежая копия папки GarnizonMail с сервера лежит в C:\\Users\\Office\\GarnizonMail-from-server\\GarnizonMail. Нужно подменить ею рабочую папку C:\\Users\\Office\\GarnizonMail, ничего не удаляя и не печатая секреты. Расписание не включай, письма не отправляй.\n\n1. Проверь, что исходная папка есть и в ней есть kp-counter.json. Покажи ТОЛЬКО содержимое kp-counter.json (ожидается last 67 или больше). Если last меньше 67, остановись и скажи.\n2. Из текущего C:\\Users\\Office\\GarnizonMail\\.env прочитай значение строки GEMINI_API_KEY и держи его в памяти. Не печатай и не логируй его.\n3. Переименуй C:\\Users\\Office\\GarnizonMail в C:\\Users\\Office\\GarnizonMail-old-<сегодняшняя дата>. Ничего не удаляй.\n4. Переименуй старую «устаревшую» копию C:\\Users\\Office\\Documents\\progect\\GarnizonMail в GarnizonMail-STALE, чтобы её не перепутали.\n5. Перемести C:\\Users\\Office\\GarnizonMail-from-server\\GarnizonMail в C:\\Users\\Office\\GarnizonMail.\n6. В новом файле C:\\Users\\Office\\GarnizonMail\\.env убедись, что есть ровно одна строка GEMINI_API_KEY= со значением из пункта 2 (если строки не было, добавь). Кодировка UTF-8 без BOM, остальные строки не меняй. Значение не печатай.\n7. Если в C:\\Users\\Office\\GarnizonMail есть файл backend-override, покажи его содержимое (одно слово) и удали этот файл: он перебивает настройку gemini.\n8. Запусти python tools\\sales\\scheduled_job.py doctor и покажи вывод (должно быть «модель: gemini»).\n9. Покажи: содержимое kp-counter.json, количество папок в inbox и в outbox, и подтверди, что backend-override отсутствует.\n\nКлючи, пароли и тексты писем в ответ не вставляй."
+    },
+    {
+      "id": "step1-server-timers-off",
+      "title": "Шаг 1. Выключить почтовые таймеры на сервере",
+      "where": "Терминал сервера (code-server) или в чате Claude с префиксом «!»",
+      "text": "sudo systemctl disable --now garnizon-autodraft.timer garnizon-buttons.timer\nsystemctl list-timers --all | grep garnizon"
+    },
+    {
+      "id": "step3-win-update-tests",
+      "title": "Шаг 3. Windows: обновить код и прогнать тесты",
+      "where": "PowerShell на Windows-компьютере",
+      "text": "cd {{win_project}}\ngit fetch origin\ngit checkout mail-migration\ngit pull origin mail-migration\npy -3.12 -X utf8 -m unittest discover -s tools\\sales -p \"test_*.py\"\nnpx vitest run tools/sales"
+    },
+    {
+      "id": "step5-win-enable-tasks",
+      "title": "Шаг 5. Windows: включить задачи по расписанию",
+      "where": "PowerShell на Windows-компьютере, только после шагов 1–4",
+      "text": "cd {{win_project}}\npowershell -ExecutionPolicy Bypass -File tools\\sales\\windows\\install-tasks.ps1 -ServerTimersDisabled\nGet-ScheduledTask -TaskPath \\Garnizon\\ | Get-ScheduledTaskInfo | Format-Table TaskName, LastRunTime, LastTaskResult, NextRunTime"
+    },
+    {
+      "id": "rollback-win-off-server-on",
+      "title": "Откат: выключить Windows и вернуть сервер",
+      "where": "Сначала PowerShell на Windows, потом терминал сервера",
+      "text": "# На Windows:\ncd {{win_project}}\npowershell -ExecutionPolicy Bypass -File tools\\sales\\windows\\uninstall-tasks.ps1 -DisableOnly\n\n# Потом на сервере:\nsudo systemctl enable --now garnizon-autodraft.timer garnizon-buttons.timer\nsystemctl list-timers --all | grep garnizon"
     }
   ]
 }
